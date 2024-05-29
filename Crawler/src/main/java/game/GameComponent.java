@@ -130,6 +130,9 @@ public class GameComponent extends Canvas implements Runnable {
         frame.add(game, BorderLayout.CENTER);
         frame.pack();
 
+        ImageIcon icon = new ImageIcon(GameComponent.class.getResource("/icon.png"));
+        frame.setIconImage(icon.getImage());
+
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
