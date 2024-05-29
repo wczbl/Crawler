@@ -7,3 +7,13 @@
 ![image](https://github.com/wczbl/Crawler/assets/130032524/e9bafffe-415e-4ba7-8d35-feda1fea4f3c)
 ![image](https://github.com/wczbl/Crawler/assets/130032524/c29f9aa1-b8bb-4d3e-8772-f0f9093ef7e4)
 ![image](https://github.com/wczbl/Crawler/assets/130032524/e87475e4-5e34-4266-9f48-7619a41f4efb)
+
+# TODO
+- Vector 3 Pooling
+- Light Map
+- Walls & Doors
+- Collision Detection
+- Enemies
+- Main Menu
+- Sound Effects
+- Better Pause Menu
