@@ -14,7 +14,7 @@ public class Tree extends Entity {
     public void tick() { tickTime++; }
 
     public void render(ViewPort viewPort, Camera cam) {
-        viewPort.renderSprite(pos, 0.5, cam, 9 + (tickTime / 60 % 2));
+        viewPort.renderSprite(pos, cam, Art.sprites[9 + (tickTime / 60 % 2)]);
     }
 
 }

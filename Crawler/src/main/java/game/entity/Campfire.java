@@ -10,7 +10,7 @@ public class Campfire extends Entity {
 
     public Campfire(Vec3 pos) {
         super(pos);
-        sprite = 3;
+        sprite = 2;
     }
 
     public void tick() {
@@ -25,6 +25,6 @@ public class Campfire extends Entity {
     }
 
     public void render(ViewPort viewPort, Camera cam) {
-        viewPort.renderSprite(pos, 0.5, cam, sprite, Art.sprites);
+        viewPort.renderSprite(pos, cam, Art.sprites[sprite]);
     }
 }

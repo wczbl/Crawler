@@ -6,6 +6,8 @@ import game.gfx.Camera;
 import game.gfx.ViewPort;
 import game.math.Vec3;
 
+import javax.swing.*;
+
 public abstract class Particle extends Entity {
 
     public int lifeTime;
@@ -25,6 +27,7 @@ public abstract class Particle extends Entity {
         r = 0.1;
         lifeTime = maxLifeTime = random.nextInt(30) + 60;
         posA = posA.scale(speed);
+        checkCollision = false;
     }
 
     public void tick() {
@@ -33,16 +36,11 @@ public abstract class Particle extends Entity {
             return;
         }
 
-        Vec3 newPos = pos.add(posA);
-        if (newPos.y > 0.5) newPos.y *= -0.3;
-
-        pos = newPos;
-        posA = posA.scale(level.friction);
+        move();
+        posA = posA.scale(friction);
         posA.y += gravity;
     }
 
-    public void render(ViewPort viewPort, Camera cam) {
-        viewPort.renderSprite(pos, r, cam, sprite, Art.particles);
-    }
+    public void render(ViewPort viewPort, Camera cam) { viewPort.renderSprite(pos, r, cam, Art.particles[sprite]); }
 
 }

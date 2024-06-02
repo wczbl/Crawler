@@ -1,6 +1,7 @@
 package game.entity;
 
 import game.InputHandler;
+import game.entity.projectile.Fireball;
 import game.gfx.Camera;
 import game.gfx.ViewPort;
 import game.math.Vec3;
@@ -9,8 +10,6 @@ public class Player extends Entity {
 
     public double forwardSpeed = 0.03;
     public double turnSpeed = 0.01;
-    public double xRot = 0.0;
-    public double xRotA = 0.0;
     public double rCos;
     public double rSin;
     public int chargeTime;
@@ -20,8 +19,6 @@ public class Player extends Entity {
 
     public Player(Vec3 pos) {
         super(pos);
-        rCos = Math.cos(xRot);
-        rSin = Math.sin(xRot);
         health = maxHealth;
         chargeTime = maxChargeTime;
     }
@@ -41,30 +38,31 @@ public class Player extends Entity {
         xm /= d;
         zm /= d;
 
-        if (input.turnLeft.down) xRotA += turnSpeed;
-        if (input.turnRight.down) xRotA -= turnSpeed;
-
-        rCos = Math.cos(xRot);
-        rSin = Math.sin(xRot);
-
         posA.x -= (xm * rCos + zm * rSin) * forwardSpeed;
         posA.z -= (zm * rCos - xm * rSin) * forwardSpeed;
 
-        pos = pos.add(posA);
-        posA = posA.scale(0.77);
+        if (input.turnLeft.down) rotA.x += turnSpeed;
+        if (input.turnRight.down) rotA.x -= turnSpeed;
 
-        xRot += xRotA;
-        xRotA *= 0.77;
-
-        if ((input.leftPressed || input.rightPressed || input.ability.down || input.attack.down) && chargeTime >= maxChargeTime) {
-            Vec3 p = new Vec3(0, 0, 1).rotY(xRot).normalize().scale(0.06);
-            level.add(new Fireball(pos.add(new Vec3(0, 0.2, 0.4)), p));
+        if ((input.ability.down || input.rightPressed) && chargeTime >= maxChargeTime) {
+            Vec3 pa = new Vec3(0, 0, 1).rotY(rot.x).normalize().scale(0.2);
+            level.add(new Fireball(this, pos.add(new Vec3(0, 0.2, 0)), pa));
             chargeTime = 0;
         }
     }
 
     public void tick() {
         if (chargeTime < maxChargeTime) chargeTime++;
+
+        rot = rot.add(rotA);
+        rotA = rotA.scale(0.77);
+
+        rCos = Math.cos(rot.x);
+        rSin = Math.sin(rot.x);
+
+        move();
+
+        posA = posA.scale(friction);
     }
 
     public void render(ViewPort viewPort, Camera cam) {}
