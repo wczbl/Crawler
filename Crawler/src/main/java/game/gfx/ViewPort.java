@@ -50,18 +50,22 @@ public class ViewPort extends Bitmap {
                     Tile tile = level.getTile(xTile, yTile);
 
                     zBuffer[xp + yp * w] = zd;
+
                     pixels[xp + yp * w] = Art.tiles[tile.getTexture(level, xTile, yTile)].pixels[(xTex & sw - 1) + (yTex & sw - 1) * sw];
                 } else {
+                    if (zBuffer[xp + yp * w] != MAX_Z_BUFFER) continue;
                     zBuffer[xp + yp * w] = -1.0;
                 }
             }
         }
     }
 
-    public void renderSprite(Vec3 pos, double r, Camera cam, int texture) { renderSprite(pos, r, cam, texture, Art.sprites); }
+    public void renderSprite(Vec3 pos, Camera cam, Bitmap src) { renderSprite(pos, 1.0, cam, Vec2.zero, src); }
 
-    public void renderSprite(Vec3 pos, double r, Camera cam, int texture, Bitmap[] sprites) {
-        Vec3 vc = cam.toCam(pos).scale(1.0);
+    public void renderSprite(Vec3 pos, double r, Camera cam, Bitmap src) { renderSprite(pos, r, cam, Vec2.zero, src); }
+
+    public void renderSprite(Vec3 pos, double r, Camera cam, Vec2 spriteOffset, Bitmap src) {
+        Vec3 vc = cam.toCam(pos, 2.0);
         Vec2 s = cam.project(vc);
 
         if (vc.z < cam.nearClip) return;
@@ -70,10 +74,6 @@ public class ViewPort extends Bitmap {
         Vec2 offset = new Vec2(r * cam.fov / vc.z, r * cam.fov / vc.z);
         Vec2 s0 = s.sub(offset);
         Vec2 s1 = s.add(offset);
-
-
-
-        double zz = vc.z * 4.0;
 
         int xp0 = (int) Math.ceil(s0.x);
         int xp1 = (int) Math.ceil(s1.x);
@@ -89,18 +89,18 @@ public class ViewPort extends Bitmap {
 
         double iw = 1.0 / (s1.x - s0.x);
         double ih = 1.0 / (s1.y - s0.y);
-        int spriteSize = sprites[0].w;
+        int w = src.w;
 
-        for (int yp = yp0; yp < yp1; ++yp) {
-            int yTex = (int) ((yp - s0.y) * ih * spriteSize);
+        for (int yp = yp0; yp < yp1; yp++) {
+            int yTex = (int) (((yp - s0.y) * ih + spriteOffset.y) * w) % w;
+            for (int xp = xp0; xp < xp1; xp++) {
+                int xTex = (int) (((xp - s0.x) * iw + spriteOffset.x) * w) % w;
 
-            for (int xp = xp0; xp < xp1; ++xp) {
-                int xTex = (int) ((xp - s0.x) * iw * spriteSize);
-                int col = sprites[texture].pixels[(xTex & spriteSize - 1) + (yTex & spriteSize - 1) * spriteSize];
+                int col = src.pixels[(xTex & w - 1) + (yTex & w - 1) * w];
                 if (col == 0xFF00FF || col == 0xFFFF00FF) continue;
 
-                if (zBuffer[xp + yp * w] > zz) {
-                    zBuffer[xp + yp * w] = zz;
+                if (zBuffer[xp + yp * this.w] > vc.z * 4.0) {
+                    zBuffer[xp + yp * this.w] = vc.z * 4.0;
                     setPixel(xp, yp, col);
                 }
             }
