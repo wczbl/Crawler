@@ -23,14 +23,6 @@ public class Bat extends Mob {
             rotA.x = (random.nextGaussian() * random.nextGaussian()) * 0.3;
         }
 
-        rotA.x = (random.nextGaussian() * random.nextGaussian()) * 0.3;
-        rot = rot.add(rotA);
-        rotA = rotA.scale(0.77);
-
-        if (posA.x == 0 || posA.z == 0) {
-            rotA.x += (random.nextGaussian() * random.nextDouble()) * 0.3;
-        }
-
         rotA.x += (random.nextGaussian() * random.nextDouble()) * 0.1;
         rot = rot.add(rotA);
         rotA = rotA.scale(0.77);
